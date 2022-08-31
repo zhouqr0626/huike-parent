@@ -28,6 +28,7 @@ import com.huike.common.utils.SecurityUtils;
 
 /**
  * 商机跟进记录Controller
+ *
  * @date 2021-04-28
  */
 @RestController
@@ -45,9 +46,16 @@ public class TbBusinessTrackRecordController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('business:record:list')")
     @GetMapping("/list")
-    public  AjaxResult list(@RequestParam("businessId")Long id){
-
-        return null;
+    public AjaxResult list(@RequestParam("businessId") Long id) {
+        List<TbBusinessTrackRecord> tbBusinessTrackRecordList = tbBusinessTrackRecordService.selectRecordById(id);
+        for (TbBusinessTrackRecord tbBusinessTrackRecord : tbBusinessTrackRecordList) {
+            String[] items = tbBusinessTrackRecord.getKeyItems().split(",");
+            for (String item : items) {
+                String dictLable = sysDictDataService.selectDictLabel("communication_point", item);
+                tbBusinessTrackRecord.getKeys().add(dictLable);
+            }
+        }
+        return AjaxResult.success(tbBusinessTrackRecordList);
     }
 
     /**
@@ -56,7 +64,17 @@ public class TbBusinessTrackRecordController extends BaseController {
     @PreAuthorize("@ss.hasPermi('business:record:add')")
     @Log(title = "商机跟进记录", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody BusinessTrackVo businessTrackVo){
-        return null;
+    public AjaxResult add(@RequestBody BusinessTrackVo businessTrackVo) {
+        TbBusinessTrackRecord trackRecord = new TbBusinessTrackRecord();
+        BeanUtils.copyProperties(businessTrackVo, trackRecord);
+        trackRecord.setCreateTime(DateUtils.getNowDate());
+        trackRecord.setCreateBy(SecurityUtils.getUsername());
+        TbBusiness business = new TbBusiness();
+        BeanUtils.copyProperties(businessTrackVo, business);
+        business.setStatus(TbBusiness.StatusType.FOLLOWING.getValue());
+        business.setId(businessTrackVo.getBusinessId());
+        return toAjax(tbBusinessTrackRecordService.insertTbBusinessTrackRecord(business, trackRecord));
     }
+
+
 }
