@@ -17,4 +17,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="nextTime"    column="next_time"    />
     </resultMap>
 
+    <insert id="addClueTrack" parameterType="TbClueTrackRecord">
+        insert into tb_clue_track_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clueId!=null">clue_id,</if>
+            <if test="createBy!=null">create_by,</if>
+            <if test="subject!=null">subject,</if>
+            <if test="record!=null">record,</if>
+            <if test="level!=null ">level,</if>
+            <if test="createTime !=null">create_time,</if>
+            <if test="type!=null">type,</if>
+            <if test="falseReason!=null">falseReason,</if>
+            <if test="nextTime!=null">next_time</if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="clueId!=null">#{clueId},</if>
+            <if test="createBy!=null">#{createBy},</if>
+            <if test="subject!=null">#{subject},</if>
+            <if test="record!=null">#{record},</if>
+            <if test="level!=null and level!=''">#{level},</if>
+            <if test="createTime !=null">#{createTime},</if>
+            <if test="type!=null">#{type},</if>
+            <if test="falseReason!=null">#{falseReason},</if>
+            <if test="nextTime!=null">#{nextTime}</if>
+        </trim>
+    </insert>
 </mapper>

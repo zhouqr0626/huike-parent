@@ -1,6 +1,8 @@
 package com.huike.clues.service;
 
 
+import com.huike.clues.domain.vo.ClueTrackRecordVo;
+
 /**
  * 线索跟进记录Service接口
  * 
@@ -10,4 +12,5 @@ package com.huike.clues.service;
 public interface ITbClueTrackRecordService {
 
 
+    int add(ClueTrackRecordVo tbClueTrackRecord);
 }
